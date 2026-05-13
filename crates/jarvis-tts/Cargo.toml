@@ -1,0 +1,30 @@
+[package]
+name = "jarvis-tts"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[features]
+default = ["kokoro"]
+kokoro = ["dep:ort", "dep:ndarray"]
+piper = ["dep:ort", "dep:ndarray"]
+# Build ort with the CUDA execution provider. Requires CUDA toolkit at
+# build time and at runtime (libonnxruntime_providers_cuda.so). The Kokoro
+# backend registers the provider with a CPU fallback.
+cuda = ["kokoro", "ort/cuda"]
+
+[dependencies]
+jarvis-core = { workspace = true }
+jarvis-audio = { workspace = true }
+anyhow = { workspace = true }
+thiserror = { workspace = true }
+tracing = { workspace = true }
+tokio = { workspace = true }
+tokio-util = { workspace = true }
+async-trait = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+ort = { workspace = true, optional = true }
+ndarray = { workspace = true, optional = true }
+once_cell = "1"
