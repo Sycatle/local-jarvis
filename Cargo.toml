@@ -1,0 +1,67 @@
+[workspace]
+resolver = "2"
+members = []
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.90"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/sycatle/local-jarvis"
+
+[workspace.dependencies]
+# Async runtime
+tokio = { version = "1", features = ["full"] }
+tokio-util = { version = "0.7", features = ["rt"] }
+async-trait = "0.1"
+futures = "0.3"
+
+# Logs / errors
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+tracing-journald = "0.3"
+anyhow = "1"
+thiserror = "1"
+
+# Serde / config
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+schemars = "0.8"
+toml = "0.8"
+figment = { version = "0.10", features = ["toml", "env"] }
+
+# Dirs / CLI
+directories = "5"
+clap = { version = "4", features = ["derive"] }
+
+# Audio / DSP
+cpal = "0.15"
+rubato = "0.15"
+realfft = "3"
+hound = "3"
+
+# ML inference
+ort = { version = "=2.0.0-rc.10", default-features = false, features = ["std", "download-binaries", "ndarray"] }
+ndarray = "0.16"
+whisper-rs = "0.13"
+llama-cpp-2 = "0.1"
+
+# TTS phonemization
+espeakng-sys = "0.1"
+
+# D-Bus
+zbus = { version = "4", default-features = false, features = ["tokio"] }
+
+# Storage / time
+rusqlite = { version = "0.31", features = ["bundled"] }
+chrono = { version = "0.4", default-features = false, features = ["serde", "clock"] }
+
+# proc-macros
+syn = { version = "2", features = ["full", "extra-traits"] }
+quote = "1"
+proc-macro2 = "1"
+
+[profile.release]
+lto = "thin"
+codegen-units = 1
+strip = "debuginfo"
