@@ -35,7 +35,7 @@ tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 tracing-journald = "0.3"
 anyhow = "1"
-thiserror = "1"
+thiserror = "2"
 
 # Serde / config
 serde = { version = "1", features = ["derive"] }
