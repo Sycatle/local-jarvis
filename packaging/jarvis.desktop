@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Jarvis
+Comment=Local voice assistant
+Exec=jarvis run
+Terminal=false
+Categories=Utility;Audio;
+NoDisplay=false
+StartupNotify=false

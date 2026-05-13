@@ -1,0 +1,22 @@
+[Unit]
+Description=Jarvis local voice assistant
+After=pipewire.service default.target
+Wants=pipewire.service
+PartOf=graphical-session.target
+
+[Service]
+Type=simple
+ExecStart=%h/.cargo/bin/jarvis run
+Restart=on-failure
+RestartSec=2s
+# Slightly higher priority for the audio loop.
+Nice=-5
+Environment=PATH=%h/.cargo/bin:/usr/local/bin:/usr/bin:/bin
+Environment=RUST_LOG=info,jarvis=debug
+# ONNX Runtime (ort crate, load-dynamic) and CUDA libs needed at runtime.
+Environment=LD_LIBRARY_PATH=%h/.local/share/jarvis/lib:%h/.local/share/jarvis/onnxruntime/lib:/usr/lib/x86_64-linux-gnu
+Environment=ORT_DYLIB_PATH=%h/.local/share/jarvis/onnxruntime/lib/libonnxruntime.so
+MemoryHigh=4G
+
+[Install]
+WantedBy=default.target
