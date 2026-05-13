@@ -120,7 +120,11 @@ impl LlmEngine for LlamaEngine {
         // *inside* the worker thread.
         tokio::task::spawn_blocking(move || -> anyhow::Result<String> {
             let n_ctx = NonZeroU32::new(cfg.n_ctx).unwrap_or(NonZeroU32::new(4096).unwrap());
-            let mut ctx_params = LlamaContextParams::default().with_n_ctx(Some(n_ctx));
+            let n_batch = cfg.n_batch.max(512);
+            let mut ctx_params = LlamaContextParams::default()
+                .with_n_ctx(Some(n_ctx))
+                .with_n_batch(n_batch)
+                .with_n_ubatch(n_batch);
             if cfg.n_threads > 0 {
                 ctx_params = ctx_params
                     .with_n_threads(cfg.n_threads)

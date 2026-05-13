@@ -114,11 +114,16 @@ impl Default for SttCfg {
 pub struct LlmCfg {
     pub model: PathBuf,
     pub n_ctx: u32,
+    pub n_batch: u32,
     pub n_threads: i32,
     pub n_gpu_layers: i32,
     pub temperature: f32,
     pub system_prompt: String,
     pub max_tool_iterations: u32,
+    /// Maximum number of user/assistant pairs (plus the system message) kept in
+    /// the chat history before each LLM call. Prevents the rendered ChatML
+    /// prompt from outgrowing `n_batch` after a long session.
+    pub history_keep_pairs: usize,
 }
 
 impl Default for LlmCfg {
@@ -126,11 +131,13 @@ impl Default for LlmCfg {
         Self {
             model: dirs::models_dir().join("qwen2.5-3b-instruct-q4_k_m.gguf"),
             n_ctx: 4096,
+            n_batch: 2048,
             n_threads: 4,
             n_gpu_layers: 99,
             temperature: 0.4,
             system_prompt: default_system_prompt(),
             max_tool_iterations: 8,
+            history_keep_pairs: 8,
         }
     }
 }

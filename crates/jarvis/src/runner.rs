@@ -169,6 +169,7 @@ pub async fn run() -> Result<()> {
                 let cfg = jarvis_llm::LlamaConfig {
                     model: config.llm.model.clone(),
                     n_ctx: config.llm.n_ctx,
+                    n_batch: config.llm.n_batch,
                     n_threads: config.llm.n_threads,
                     n_gpu_layers: config.llm.n_gpu_layers,
                     temperature: config.llm.temperature,
@@ -226,7 +227,14 @@ pub async fn run() -> Result<()> {
     let (state_tx, state_rx) = watch::channel("idle".to_string());
     let service = ServiceHandle::start(cmd_tx, state_rx).await?;
 
-    let mut history = ChatHistory::with_system(&config.llm.system_prompt);
+    // Inject Qwen2.5's <tools> block so the model actually sees the skill
+    // signatures it can call. Without this the system prompt mentions
+    // <tool_call> in the abstract but never enumerates names/arguments, and
+    // Qwen falls back to imagining a successful action in plain prose.
+    let tool_specs = jarvis_llm::tools::ToolRegistry::specs(&*tools);
+    let system_prompt =
+        jarvis_llm::format_system_with_tools(&config.llm.system_prompt, &tool_specs);
+    let mut history = ChatHistory::with_system(system_prompt);
     if let Some(mem) = memory.as_ref() {
         if config.memory.hydrate_n > 0 {
             match mem.recent(config.memory.hydrate_n) {

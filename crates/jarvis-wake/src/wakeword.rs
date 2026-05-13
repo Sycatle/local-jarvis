@@ -152,9 +152,9 @@ mod backend {
             let embed = build_session(&embed_path).ok()?;
             let wake = build_session(&cfg.model).ok()?;
 
-            let mel_input = mel.inputs.first()?.name.clone();
-            let embed_input = embed.inputs.first()?.name.clone();
-            let wake_input = wake.inputs.first()?.name.clone();
+            let mel_input = mel.inputs().first()?.name().to_string();
+            let embed_input = embed.inputs().first()?.name().to_string();
+            let wake_input = wake.inputs().first()?.name().to_string();
 
             tracing::info!(
                 "openWakeWord loaded: wake={:?} mel_in={:?} embed_in={:?} wake_in={:?}",

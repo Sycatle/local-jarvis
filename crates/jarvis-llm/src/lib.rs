@@ -17,7 +17,7 @@ pub mod sanitize;
 pub mod streaming;
 pub mod tools;
 
-pub use chat::{ChatHistory, ChatMessage, Role};
+pub use chat::{format_system_with_tools, ChatHistory, ChatMessage, Role};
 pub use engine::{LlmEngine, ScriptedStreamEngine, StubEngine};
 pub use grammar::ToolSpec;
 #[cfg(feature = "llama")]

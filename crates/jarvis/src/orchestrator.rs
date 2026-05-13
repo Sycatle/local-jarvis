@@ -150,6 +150,12 @@ impl Orchestrator {
     async fn run_prompt(&mut self, prompt: &str, tts_cancel: CancellationToken) -> String {
         self.set_state(State::Thinking);
 
+        // Cap history before the prompt enters the LLM so the rendered ChatML
+        // stays well under `n_batch`. Without this the model crashes after
+        // ~17 turns on a 512-batch default.
+        self.history
+            .truncate_keeping_system(self.config.llm.history_keep_pairs);
+
         // Optional RAG: embed the user utterance, look up the closest stored
         // chunks, and prepend them to the prompt as context. The raw `prompt`
         // is still what gets persisted to memory so hydration stays clean.
