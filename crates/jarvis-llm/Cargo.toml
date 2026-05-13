@@ -1,0 +1,28 @@
+[package]
+name = "jarvis-llm"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[features]
+# Real llama.cpp backend. Off by default so the workspace builds without the
+# C++ toolchain or CUDA. Enable with `cargo install --features llama` (CPU) or
+# `--features cuda` (CUDA offload via llama.cpp).
+default = []
+llama = ["dep:llama-cpp-2", "llama-cpp-2/dynamic-link"]
+cuda = ["llama", "llama-cpp-2/cuda"]
+
+[dependencies]
+jarvis-core = { workspace = true }
+anyhow = { workspace = true }
+thiserror = { workspace = true }
+tracing = { workspace = true }
+tokio = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+async-trait = { workspace = true }
+futures = { workspace = true }
+async-stream = "0.3"
+regex = "1"
+llama-cpp-2 = { workspace = true, optional = true }
