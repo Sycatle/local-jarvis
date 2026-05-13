@@ -63,6 +63,16 @@ pub struct LlamaEngine {
 
 impl LlamaEngine {
     pub fn load(cfg: LlamaConfig) -> anyhow::Result<Self> {
+        // Dynamic backends: charge libggml-cuda.so / libggml-vulkan.so / etc.
+        // depuis le dossier du build llama-cpp-sys, ou un override env. Sans
+        // ça llama.cpp ne voit que le CPU même avec la feature cuda compilée
+        // (segfault potentiel ailleurs lors de l'alloc tenseurs).
+        if let Ok(dir) = std::env::var("GGML_BACKENDS_DIR") {
+            llama_cpp_2::llama_backend::load_backends_from_path(std::path::Path::new(&dir));
+        } else {
+            llama_cpp_2::llama_backend::load_backends();
+        }
+
         let backend = Arc::new(LlamaBackend::init()?);
 
         let mut model_params = LlamaModelParams::default();
