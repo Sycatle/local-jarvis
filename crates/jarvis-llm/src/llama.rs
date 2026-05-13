@@ -33,6 +33,7 @@ use crate::grammar::ToolSpec;
 pub struct LlamaConfig {
     pub model: PathBuf,
     pub n_ctx: u32,
+    pub n_batch: u32,
     pub n_threads: i32,
     pub n_gpu_layers: i32,
     pub temperature: f32,
@@ -44,6 +45,7 @@ impl Default for LlamaConfig {
         Self {
             model: PathBuf::new(),
             n_ctx: 4096,
+            n_batch: 2048,
             n_threads: -1,
             n_gpu_layers: 0,
             temperature: 0.4,
@@ -75,10 +77,11 @@ impl LlamaEngine {
 
         let backend = Arc::new(LlamaBackend::init()?);
 
-        let mut model_params = LlamaModelParams::default();
-        if cfg.n_gpu_layers > 0 {
-            model_params = model_params.with_n_gpu_layers(cfg.n_gpu_layers as u32);
-        }
+        // Toujours forcer la valeur — le défaut de LlamaModelParams place 999
+        // sur GPU dès qu'un backend CUDA est chargé, ce qui ignore une
+        // demande CPU explicite (n_gpu_layers=0).
+        let model_params =
+            LlamaModelParams::default().with_n_gpu_layers(cfg.n_gpu_layers.max(0) as u32);
 
         tracing::info!(
             "loading llama model from {:?} (n_gpu_layers={})",

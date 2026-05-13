@@ -156,21 +156,12 @@ pub async fn run() -> Result<()> {
         Arc::new(composite)
     };
 
-    // STT.
-    let stt_cfg = WhisperConfig {
-        model: config.stt.model.clone(),
-        language: config.stt.language.clone(),
-        initial_prompt: config.stt.initial_prompt.clone(),
-        no_speech_threshold: config.stt.no_speech_threshold,
-        suppress_non_speech: config.stt.suppress_non_speech,
-        n_threads: config.stt.n_threads,
-        n_gpu_layers: config.stt.n_gpu_layers,
-        ..Default::default()
-    };
-    let stt = Arc::new(WhisperStt::new(stt_cfg));
-
-    // LLM. With the `llama` feature, load llama.cpp on the configured GGUF;
-    // otherwise fall back to the stub so the daemon still boots end-to-end.
+    // LLM **avant** STT : whisper-rs embarque sa propre copie statique de
+    // ggml, et llama-cpp-2/dynamic-link charge la sienne via libllama.so.
+    // Charger whisper d'abord pousse les symboles `ggml_*` statiques en
+    // global et fait segfault llama au moment de l'alloc des tenseurs.
+    // Initialiser llama en premier garantit que libggml.so dynamique gagne
+    // la résolution de symboles, et whisper utilise ensuite sa copie privée.
     let llm: Arc<dyn jarvis_llm::engine::LlmEngine> = {
         #[cfg(feature = "llama")]
         {
@@ -206,6 +197,19 @@ pub async fn run() -> Result<()> {
             Arc::new(StubEngine::new())
         }
     };
+
+    // STT — chargé après llama pour éviter le conflit ggml.
+    let stt_cfg = WhisperConfig {
+        model: config.stt.model.clone(),
+        language: config.stt.language.clone(),
+        initial_prompt: config.stt.initial_prompt.clone(),
+        no_speech_threshold: config.stt.no_speech_threshold,
+        suppress_non_speech: config.stt.suppress_non_speech,
+        n_threads: config.stt.n_threads,
+        n_gpu_layers: config.stt.n_gpu_layers,
+        ..Default::default()
+    };
+    let stt = Arc::new(WhisperStt::new(stt_cfg));
 
     // TTS dispatch: Kokoro (default v1.1) → Piper subprocess → espeak-ng.
     let tts: Arc<dyn jarvis_tts::piper::TtsBackend> = match config.tts.engine {
