@@ -24,4 +24,7 @@ pub use grammar::ToolSpec;
 pub use llama::{LlamaConfig, LlamaEngine};
 pub use sanitize::for_tts as sanitize_for_tts;
 pub use streaming::sentence_stream;
-pub use tools::{run_tool_loop, StepCallback, ToolLoopOutcome, ToolRegistry, ToolStep};
+pub use tools::{
+    run_tool_loop, run_tool_loop_streamed, SentenceSink, StepCallback, ToolLoopOutcome,
+    ToolRegistry, ToolStep,
+};

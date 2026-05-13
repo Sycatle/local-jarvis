@@ -13,7 +13,7 @@ use jarvis_core::config::Config;
 use jarvis_core::events::WakeEvent;
 use jarvis_core::State;
 use jarvis_llm::engine::LlmEngine;
-use jarvis_llm::tools::{run_tool_loop, ToolLoopOutcome, ToolRegistry};
+use jarvis_llm::tools::{run_tool_loop_streamed, ToolLoopOutcome, ToolRegistry};
 use jarvis_llm::ChatHistory;
 use jarvis_service::{BusCommand, ServiceHandle};
 use jarvis_skills::SkillRegistry;
@@ -188,13 +188,46 @@ impl Orchestrator {
                     .await;
             });
         });
-        let reply = match run_tool_loop(
+        // Streaming TTS pipeline. The sink in `run_tool_loop_streamed` pushes
+        // sanitised sentences into `sent_tx` as soon as the LLM commits to a
+        // plain reply (no `<tool_call>` in the prefix). A concurrent task
+        // consumes the channel through `speak_stream`, so audio starts the
+        // moment the first sentence is ready instead of waiting for the full
+        // reply.
+        let (sent_tx, sent_rx) =
+            tokio::sync::mpsc::unbounded_channel::<String>();
+        let streamed_flag = Arc::new(std::sync::atomic::AtomicBool::new(false));
+        let sink: jarvis_llm::SentenceSink = {
+            let tx = sent_tx.clone();
+            let flag = Arc::clone(&streamed_flag);
+            Arc::new(move |s: String| {
+                flag.store(true, std::sync::atomic::Ordering::Release);
+                let _ = tx.send(s);
+            })
+        };
+        self.set_state(State::Speaking);
+        let tts_task = {
+            let tts = Arc::clone(&self.tts);
+            let player = Arc::clone(&self.player);
+            let cancel = tts_cancel.clone();
+            tokio::spawn(async move {
+                let chunks = futures::stream::unfold(sent_rx, |mut rx| async move {
+                    rx.recv()
+                        .await
+                        .map(|s| (Ok::<_, anyhow::Error>(s), rx))
+                });
+                crate::streaming::speak_stream(chunks, tts, player, cancel).await
+            })
+        };
+
+        let reply = match run_tool_loop_streamed(
             self.llm.as_ref(),
             self.tools.as_ref(),
             &mut self.history,
             prompt_for_llm,
             self.config.llm.max_tool_iterations,
             Some(step_cb),
+            Some(sink),
         )
         .await
         {
@@ -213,6 +246,13 @@ impl Orchestrator {
             "llm_done",
         );
         let reply = jarvis_llm::sanitize_for_tts(&reply);
+        // If the reply came from a buffered path (tool call somewhere in the
+        // iteration chain, or non-streaming error fallback), push it through
+        // the sink now so the TTS task speaks it. The streaming path already
+        // emitted its sentences per-clause and we must not double-speak.
+        if !streamed_flag.load(std::sync::atomic::Ordering::Acquire) && !reply.is_empty() {
+            let _ = sent_tx.send(reply.clone());
+        }
         if let Some(mem) = &self.memory {
             let calls = std::mem::take(&mut *tool_log.lock().unwrap());
             let calls_json = serde_json::Value::Array(calls);
@@ -220,7 +260,19 @@ impl Orchestrator {
                 tracing::warn!("memory.record failed: {e:#}");
             }
         }
-        self.speak(&reply, tts_cancel).await;
+        // Close the channel so the TTS task drains and exits.
+        drop(sent_tx);
+        let played = match tts_task.await {
+            Ok(n) => n,
+            Err(e) => {
+                tracing::warn!("tts task join failed: {e}");
+                0
+            }
+        };
+        if played == 0 && !reply.is_empty() {
+            tracing::warn!("TTS produced no audio for: {reply}");
+        }
+        let _ = self.service.emit_spoken(&reply).await;
         self.set_state(State::Idle);
         reply
     }
