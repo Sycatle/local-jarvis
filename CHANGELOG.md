@@ -7,6 +7,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Bumped `actions/checkout` 4 → 6 and `googleapis/release-please-action` 4 → 5
+  in CI workflows.
+- Bumped `toml` 0.8 → 1.1, `tokenizers` 0.20 → 0.23, `directories` 5 → 6,
+  `cpal` 0.15 → 0.17, and `whisper-rs` 0.13 → 0.16.
+- Adapted `crates/jarvis-audio` for the `cpal::SampleRate` type alias change
+  (no more tuple-struct constructor).
+- Adapted `crates/jarvis-stt` for the whisper-rs 0.16 API
+  (`set_suppress_nst`, `WhisperState::get_segment`).
+- Hardened clippy compliance under Rust 1.95 (derivable `Default`, collapsed
+  `match` patterns).
+
+### Removed
+
+- Dropped unused `rubato` dependency.
+
+### Docs
+
+- Drafted upgrade recipes for [schemars 1.x](docs/migrations/schemars-1.x.md)
+  ([#33](https://github.com/Sycatle/local-jarvis/issues/33)) and
+  [ort 2.0.0-rc.12](docs/migrations/ort-2.0.0-rc.12.md)
+  ([#36](https://github.com/Sycatle/local-jarvis/issues/36)).
+
 ## [0.1.0] - 2026-05-13
 
 Initial public release.
