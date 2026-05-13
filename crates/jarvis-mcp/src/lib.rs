@@ -26,7 +26,7 @@ use serde::{Deserialize, Serialize};
 /// ```toml
 /// [mcp.servers.fs]
 /// command = "npx"
-/// args = ["@modelcontextprotocol/server-filesystem", "/home/sycatle/Documents"]
+/// args = ["@modelcontextprotocol/server-filesystem", "/home/alice/Documents"]
 /// env = { READ_ONLY = "1" }
 /// ```
 #[derive(Debug, Clone, Serialize, Deserialize)]

@@ -47,7 +47,7 @@ Workspace crates:
 | `jarvis-wake` | Clap detector + openWakeWord |
 | `jarvis-stt` | Energy VAD + `whisper-rs` |
 | `jarvis-llm` | ChatML prompt builder + GBNF tool-loop (`llama-cpp-2`) |
-| `jarvis-tts` | eSpeak NG phonemiser + Kokoro / Piper backends |
+| `jarvis-tts` | eSpeak NG phonemiser + Kokoro (default) / Piper backends |
 | `jarvis-skills` | Skill registry + system + media skills |
 | `jarvis-skills-macros` | `#[skill]` proc-macro (reserved for v1.1) |
 | `jarvis-mcp` | MCP client bridging external tool servers |
@@ -64,8 +64,9 @@ A more thorough architecture deep-dive (in French) lives in
 
 ### Prerequisites
 
-- Linux with PipeWire and a working microphone
-- Rust 1.90+ (pinned via `rust-toolchain.toml`)
+- Linux with PipeWire and a working microphone (Linux-only by design — the
+  daemon talks systemd, D-Bus, and XDG Portals)
+- Rust stable, MSRV 1.90 (tracked by `rust-toolchain.toml`)
 - System dependencies installed by `scripts/setup.sh`:
   `build-essential pkg-config cmake clang libdbus-1-dev libssl-dev`
   `libespeak-ng-dev libasound2-dev libpipewire-0.3-dev`
@@ -81,6 +82,11 @@ the default models (Whisper, Qwen2.5-3B, openWakeWord, Silero VAD,
 Kokoro-82M), writes a default config to `~/.config/jarvis/config.toml`,
 installs the systemd user unit and the `.desktop` entry, and binds
 <kbd>Super</kbd>+<kbd>J</kbd> to `org.jarvis.Assistant.Listen`.
+
+Kokoro is the default TTS and the only one auto-installed. Piper remains
+supported as a fallback engine — point `[tts.piper].model` at a downloaded
+voice and switch `[tts].engine = "piper"` to use it. eSpeak NG is wired
+in via `apt` for phonemisation and as a last-resort speech backend.
 
 ### Manual build
 
