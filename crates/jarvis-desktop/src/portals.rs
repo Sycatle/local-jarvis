@@ -9,7 +9,7 @@ use std::path::{Path, PathBuf};
 
 use zbus::Connection;
 
-use crate::backend::{DesktopError, NotificationOptions};
+use crate::backend::{DesktopError, NotificationOptions, NotificationPriority};
 
 pub struct Portals {
     conn: Connection,
@@ -43,6 +43,10 @@ impl Portals {
         let body: std::collections::HashMap<&str, zbus::zvariant::Value<'_>> = [
             ("title", zbus::zvariant::Value::from(opts.title.as_str())),
             ("body", zbus::zvariant::Value::from(opts.body.as_str())),
+            (
+                "priority",
+                zbus::zvariant::Value::from(priority_key(opts.priority)),
+            ),
         ]
         .into_iter()
         .collect();
@@ -99,5 +103,29 @@ impl Portals {
         Ok(path
             .map(Path::to_path_buf)
             .unwrap_or_else(|| PathBuf::from("portal-screenshot-pending")))
+    }
+}
+
+/// Map our priority enum to the string key documented by the XDG Notification
+/// portal (`org.freedesktop.portal.Notification.AddNotification`, key `"priority"`).
+fn priority_key(p: NotificationPriority) -> &'static str {
+    match p {
+        NotificationPriority::Low => "low",
+        NotificationPriority::Normal => "normal",
+        NotificationPriority::High => "high",
+        NotificationPriority::Urgent => "urgent",
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn priority_keys_match_xdg_portal_spec() {
+        assert_eq!(priority_key(NotificationPriority::Low), "low");
+        assert_eq!(priority_key(NotificationPriority::Normal), "normal");
+        assert_eq!(priority_key(NotificationPriority::High), "high");
+        assert_eq!(priority_key(NotificationPriority::Urgent), "urgent");
     }
 }
