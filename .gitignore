@@ -1,0 +1,24 @@
+# Rust / Cargo
+/target
+**/*.rs.bk
+Cargo.lock.bak
+
+# Models (downloaded by scripts/setup.sh)
+*.gguf
+*.onnx
+*.bin
+models/
+
+# Editors / IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Tooling caches (project-local)
+.claude/
+.superpowers/
