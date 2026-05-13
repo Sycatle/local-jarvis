@@ -151,8 +151,14 @@ impl ServiceHandle {
             .object_server()
             .interface::<_, Service>(OBJECT_PATH)
             .await?;
-        Service::step_taken(iface_ref.signal_context(), iteration, thought, action, observation)
-            .await?;
+        Service::step_taken(
+            iface_ref.signal_context(),
+            iteration,
+            thought,
+            action,
+            observation,
+        )
+        .await?;
         Ok(())
     }
 }

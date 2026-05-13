@@ -70,11 +70,8 @@ mod backend {
             // whisper-rs 0.13 exposes a `use_gpu` flag; setting it true only
             // has effect when the `cuda` (or `metal`) feature was compiled in.
             params.use_gpu = cfg.n_gpu_layers > 0;
-            let ctx = WhisperContext::new_with_params(
-                cfg.model.to_string_lossy().as_ref(),
-                params,
-            )
-            .map_err(|e| WhisperSttError::Inference(format!("ctx init: {e}")))?;
+            let ctx = WhisperContext::new_with_params(cfg.model.to_string_lossy().as_ref(), params)
+                .map_err(|e| WhisperSttError::Inference(format!("ctx init: {e}")))?;
             Ok(Self {
                 ctx: Mutex::new(ctx),
                 cfg,

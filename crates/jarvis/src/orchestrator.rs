@@ -317,8 +317,7 @@ impl Orchestrator {
         // and playback overlap (up to 2 chunks in flight). For one-sentence
         // replies this is no worse than the buffered path; for multi-sentence
         // replies it cuts time-to-first-audio roughly in half.
-        let tokens =
-            futures::stream::iter(vec![Ok::<String, anyhow::Error>(text.to_string())]);
+        let tokens = futures::stream::iter(vec![Ok::<String, anyhow::Error>(text.to_string())]);
         let chunks = jarvis_llm::sentence_stream(tokens);
         let played = crate::streaming::speak_stream(
             chunks,
@@ -487,11 +486,19 @@ mod hallucination_tests {
 
     #[test]
     fn catches_known_phrases() {
-        assert!(is_whisper_hallucination("...vous vous rassurez... ...pour votre femme."));
-        assert!(is_whisper_hallucination("Sous-titres réalisés par la communauté."));
-        assert!(is_whisper_hallucination("Merci d'avoir regardé cette vidéo."));
+        assert!(is_whisper_hallucination(
+            "...vous vous rassurez... ...pour votre femme."
+        ));
+        assert!(is_whisper_hallucination(
+            "Sous-titres réalisés par la communauté."
+        ));
+        assert!(is_whisper_hallucination(
+            "Merci d'avoir regardé cette vidéo."
+        ));
         assert!(is_whisper_hallucination("Magie Frtrans larousse"));
-        assert!(is_whisper_hallucination("Le jour où il faut s'en aller à l'heure."));
+        assert!(is_whisper_hallucination(
+            "Le jour où il faut s'en aller à l'heure."
+        ));
     }
 
     #[test]
@@ -520,8 +527,12 @@ mod hallucination_tests {
 
     #[test]
     fn allows_real_queries() {
-        assert!(!is_whisper_hallucination("Bonjour Jarvis quelle heure est-il"));
-        assert!(!is_whisper_hallucination("Mets la musique en pause s'il te plaît"));
+        assert!(!is_whisper_hallucination(
+            "Bonjour Jarvis quelle heure est-il"
+        ));
+        assert!(!is_whisper_hallucination(
+            "Mets la musique en pause s'il te plaît"
+        ));
         assert!(!is_whisper_hallucination("Baisse le volume"));
         assert!(!is_whisper_hallucination("Prends une capture d'écran"));
         assert!(!is_whisper_hallucination("Merci Jarvis"));
@@ -535,7 +546,9 @@ mod hallucination_tests {
         assert!(is_whisper_hallucination(
             "Sous-titres réalisés para la communauté d'Amara.org"
         ));
-        assert!(is_whisper_hallucination("Sous-titrage Société Radio-Canada"));
+        assert!(is_whisper_hallucination(
+            "Sous-titrage Société Radio-Canada"
+        ));
     }
 
     #[test]
@@ -545,9 +558,7 @@ mod hallucination_tests {
             "J'espère que vous avez apprécié la vidéo"
         ));
         assert!(is_whisper_hallucination("Please subscribe to my channel"));
-        assert!(is_whisper_hallucination(
-            "Je vous remercie de vous abonner"
-        ));
+        assert!(is_whisper_hallucination("Je vous remercie de vous abonner"));
     }
 
     #[test]
@@ -558,7 +569,9 @@ mod hallucination_tests {
         assert!(is_whisper_hallucination(
             "Subtítulos realizados por la comunidad de Amara"
         ));
-        assert!(is_whisper_hallucination("Legendas pela comunidade Amara.org"));
+        assert!(is_whisper_hallucination(
+            "Legendas pela comunidade Amara.org"
+        ));
         assert!(is_whisper_hallucination(
             "Sottotitoli e revisione a cura di QTSS"
         ));

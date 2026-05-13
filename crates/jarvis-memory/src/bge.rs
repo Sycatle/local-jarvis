@@ -47,10 +47,7 @@ impl BgeSmallEmbedder {
             .commit_from_file(model)
             .with_context(|| format!("loading bge ONNX from {model:?}"))?;
 
-        let has_token_type_ids = session
-            .inputs
-            .iter()
-            .any(|i| i.name == "token_type_ids");
+        let has_token_type_ids = session.inputs.iter().any(|i| i.name == "token_type_ids");
 
         let tk = Tokenizer::from_file(tokenizer)
             .map_err(|e| anyhow!("loading bge tokenizer at {tokenizer:?}: {e}"))?;
@@ -116,8 +113,8 @@ impl Embedder for BgeSmallEmbedder {
             }
         }
 
-        let ids_tensor = Tensor::from_array(input_ids)
-            .map_err(|e| anyhow!("input_ids tensor: {e}"))?;
+        let ids_tensor =
+            Tensor::from_array(input_ids).map_err(|e| anyhow!("input_ids tensor: {e}"))?;
         let mask_tensor = Tensor::from_array(attention_mask)
             .map_err(|e| anyhow!("attention_mask tensor: {e}"))?;
         let tt_tensor = Tensor::from_array(token_type_ids)

@@ -84,7 +84,8 @@ impl Capture {
                 SampleFormat::I16 => device.build_input_stream(
                     &config,
                     move |data: &[i16], _| {
-                        let f: Vec<f32> = data.iter().map(|s| *s as f32 / i16::MAX as f32).collect();
+                        let f: Vec<f32> =
+                            data.iter().map(|s| *s as f32 / i16::MAX as f32).collect();
                         publish(&f);
                     },
                     err_fn,

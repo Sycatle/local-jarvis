@@ -40,7 +40,10 @@ impl Player {
             buffer_size: cpal::BufferSize::Default,
         };
 
-        let buffer: Vec<f32> = samples.iter().map(|s| *s as f32 / i16::MAX as f32).collect();
+        let buffer: Vec<f32> = samples
+            .iter()
+            .map(|s| *s as f32 / i16::MAX as f32)
+            .collect();
         let buffer = Arc::new(buffer);
         let pos = Arc::new(std::sync::atomic::AtomicUsize::new(0));
         let done = Arc::new(AtomicBool::new(false));

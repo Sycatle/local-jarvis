@@ -4,9 +4,9 @@
 //! embeddings) in a local SQLite database so that subsequent sessions can be
 //! hydrated with prior context and grounded in indexed documents.
 
-pub mod embedder;
 #[cfg(feature = "embed")]
 pub mod bge;
+pub mod embedder;
 
 pub use embedder::Embedder;
 
@@ -119,15 +119,10 @@ impl Memory {
         })
     }
 
-    pub fn record(
-        &self,
-        user_text: &str,
-        assistant_text: &str,
-        tool_calls: &Value,
-    ) -> Result<i64> {
+    pub fn record(&self, user_text: &str, assistant_text: &str, tool_calls: &Value) -> Result<i64> {
         let ts = Utc::now().to_rfc3339();
-        let tool_calls_str = serde_json::to_string(tool_calls)
-            .context("serialising tool_calls to JSON")?;
+        let tool_calls_str =
+            serde_json::to_string(tool_calls).context("serialising tool_calls to JSON")?;
         let conn = self.conn.lock().expect("memory mutex poisoned");
         conn.execute(
             "INSERT INTO interactions (ts, user_text, assistant_text, tool_calls)
@@ -270,18 +265,18 @@ impl Memory {
                 score,
             });
         }
-        heap.sort_by(|a, b| b.score.partial_cmp(&a.score).unwrap_or(std::cmp::Ordering::Equal));
+        heap.sort_by(|a, b| {
+            b.score
+                .partial_cmp(&a.score)
+                .unwrap_or(std::cmp::Ordering::Equal)
+        });
         heap.truncate(top_k);
         Ok(heap)
     }
 
     pub fn count(&self) -> Result<usize> {
         let conn = self.conn.lock().expect("memory mutex poisoned");
-        let n: i64 = conn.query_row(
-            "SELECT COUNT(*) FROM interactions",
-            [],
-            |row| row.get(0),
-        )?;
+        let n: i64 = conn.query_row("SELECT COUNT(*) FROM interactions", [], |row| row.get(0))?;
         Ok(n as usize)
     }
 }
@@ -310,7 +305,8 @@ mod tests {
     fn recent_respects_limit() {
         let mem = Memory::in_memory().unwrap();
         for i in 0..5 {
-            mem.record(&format!("u{i}"), &format!("a{i}"), &json!([])).unwrap();
+            mem.record(&format!("u{i}"), &format!("a{i}"), &json!([]))
+                .unwrap();
         }
         let got = mem.recent(2).unwrap();
         assert_eq!(got.len(), 2);
@@ -333,9 +329,12 @@ mod tests {
     fn facts_cosine_search_ranks_by_similarity() {
         let mem = Memory::in_memory().unwrap();
         // Hand-rolled unit vectors so the expected ordering is unambiguous.
-        mem.add_fact("doc", Some("a.md"), "alpha", &[1.0, 0.0, 0.0]).unwrap();
-        mem.add_fact("doc", Some("b.md"), "beta", &[0.0, 1.0, 0.0]).unwrap();
-        mem.add_fact("doc", Some("c.md"), "gamma", &[0.7, 0.7, 0.0]).unwrap();
+        mem.add_fact("doc", Some("a.md"), "alpha", &[1.0, 0.0, 0.0])
+            .unwrap();
+        mem.add_fact("doc", Some("b.md"), "beta", &[0.0, 1.0, 0.0])
+            .unwrap();
+        mem.add_fact("doc", Some("c.md"), "gamma", &[0.7, 0.7, 0.0])
+            .unwrap();
 
         let hits = mem.search_facts(&[1.0, 0.0, 0.0], 2).unwrap();
         assert_eq!(hits.len(), 2);

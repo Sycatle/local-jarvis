@@ -49,7 +49,14 @@ impl TtsBackend for EspeakNgBackend {
         cancel: CancellationToken,
     ) -> Result<(Vec<i16>, u32), PiperTtsError> {
         let mut child = Command::new("espeak-ng")
-            .args(["-v", &self.voice, "-s", &self.speed_wpm.to_string(), "--", text])
+            .args([
+                "-v",
+                &self.voice,
+                "-s",
+                &self.speed_wpm.to_string(),
+                "--",
+                text,
+            ])
             .spawn()
             .map_err(|e| PiperTtsError::Synthesis(format!("spawn espeak-ng: {e}")))?;
 

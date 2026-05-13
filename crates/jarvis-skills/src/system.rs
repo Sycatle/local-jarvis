@@ -207,10 +207,7 @@ impl NotifySkill {
     }
 }
 
-#[skill(
-    name = "notify",
-    description = "Show a desktop notification."
-)]
+#[skill(name = "notify", description = "Show a desktop notification.")]
 impl NotifySkill {
     fn capabilities(&self) -> Capabilities {
         Capabilities::dbus(["org.freedesktop.portal.Notification"])

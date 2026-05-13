@@ -43,7 +43,10 @@ impl Desktop for DesktopFacade {
         self.portals.notify(opts).await
     }
 
-    async fn screenshot(&self, path: Option<&std::path::Path>) -> Result<std::path::PathBuf, DesktopError> {
+    async fn screenshot(
+        &self,
+        path: Option<&std::path::Path>,
+    ) -> Result<std::path::PathBuf, DesktopError> {
         self.portals.screenshot(path).await
     }
 

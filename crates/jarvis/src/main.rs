@@ -35,9 +35,7 @@ enum Command {
     /// Interactive terminal UI (Ratatui) connected to the running daemon.
     Tui,
     /// Speak text via the running daemon.
-    Say {
-        text: String,
-    },
+    Say { text: String },
     /// Trigger a listen cycle on the running daemon, print the transcript.
     Listen,
     /// Query the running daemon's state.
@@ -67,13 +65,9 @@ enum Command {
         cmd: MemoryCmd,
     },
     /// Enable a previously-disabled skill across daemon restarts.
-    SkillEnable {
-        name: String,
-    },
+    SkillEnable { name: String },
     /// Disable a skill across daemon restarts (it is dropped at boot).
-    SkillDisable {
-        name: String,
-    },
+    SkillDisable { name: String },
     /// Synthesise a phrase with Kokoro locally and play it. Useful to A/B-test
     /// voices without restarting the daemon.
     TtsPreview {
@@ -146,7 +140,10 @@ async fn config_edit() -> Result<()> {
             Ok(())
         }
         Err(e) => {
-            eprintln!("warning: config at {} fails to parse:\n  {e}", path.display());
+            eprintln!(
+                "warning: config at {} fails to parse:\n  {e}",
+                path.display()
+            );
             eprintln!("the daemon will refuse to start until this is fixed.");
             Err(e)
         }
@@ -155,8 +152,8 @@ async fn config_edit() -> Result<()> {
 
 fn init_logging() {
     // Send to journald when running under systemd, else stderr.
-    let under_systemd = std::env::var_os("INVOCATION_ID").is_some()
-        || std::env::var_os("JOURNAL_STREAM").is_some();
+    let under_systemd =
+        std::env::var_os("INVOCATION_ID").is_some() || std::env::var_os("JOURNAL_STREAM").is_some();
     let filter = tracing_subscriber::EnvFilter::try_from_default_env()
         .unwrap_or_else(|_| tracing_subscriber::EnvFilter::new("info"));
     if under_systemd {

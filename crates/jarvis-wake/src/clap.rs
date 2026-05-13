@@ -175,8 +175,7 @@ impl ClapDetector {
         self.baseline = a * self.baseline + (1.0 - a) * rms;
 
         // 3. Onset detection.
-        let onset = rms > self.cfg.onset_floor
-            && rms > self.cfg.onset_factor * self.baseline;
+        let onset = rms > self.cfg.onset_floor && rms > self.cfg.onset_factor * self.baseline;
 
         if !onset {
             return ClapOutcome::Silence;
@@ -237,7 +236,10 @@ mod tests {
     fn silence_yields_no_event() {
         let mut d = ClapDetector::new(ClapConfig::default());
         for _ in 0..50 {
-            assert!(matches!(d.process_block(&silence(1024)), ClapOutcome::Silence));
+            assert!(matches!(
+                d.process_block(&silence(1024)),
+                ClapOutcome::Silence
+            ));
         }
     }
 
@@ -250,7 +252,10 @@ mod tests {
         }
         // First clap.
         let first = d.process_block(&burst(1024, 0.6));
-        assert!(matches!(first, ClapOutcome::SingleClap | ClapOutcome::Silence));
+        assert!(matches!(
+            first,
+            ClapOutcome::SingleClap | ClapOutcome::Silence
+        ));
         // Wait > min_gap.
         std::thread::sleep(Duration::from_millis(200));
         // Second clap.

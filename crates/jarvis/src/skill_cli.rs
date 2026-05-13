@@ -30,8 +30,8 @@ pub async fn list() -> Result<()> {
 }
 
 pub async fn invoke(name: &str, args_json: &str) -> Result<()> {
-    let arguments: serde_json::Value = serde_json::from_str(args_json)
-        .map_err(|e| anyhow!("--args must be valid JSON: {e}"))?;
+    let arguments: serde_json::Value =
+        serde_json::from_str(args_json).map_err(|e| anyhow!("--args must be valid JSON: {e}"))?;
     let r = build_registry().await?;
     let call = ToolCall {
         name: name.to_string(),

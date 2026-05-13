@@ -106,9 +106,7 @@ impl TtsBackend for PiperSubprocess {
             .ok_or_else(|| PiperTtsError::Synthesis("no piper stdout".into()))?;
 
         let mut bytes = Vec::with_capacity(64 * 1024);
-        let read_loop = async {
-            stdout.read_to_end(&mut bytes).await
-        };
+        let read_loop = async { stdout.read_to_end(&mut bytes).await };
 
         tokio::select! {
             res = read_loop => {

@@ -79,7 +79,10 @@ mod tests {
     fn loads_minimal_vocab_and_encodes() {
         let tmp = tempfile_path("kokoro-tok-test.json");
         let json = r#"{"model":{"vocab":{"$":0,"a":43,"b":44,";":1}}}"#;
-        std::fs::File::create(&tmp).unwrap().write_all(json.as_bytes()).unwrap();
+        std::fs::File::create(&tmp)
+            .unwrap()
+            .write_all(json.as_bytes())
+            .unwrap();
         let tok = KokoroTokenizer::load(&tmp).unwrap();
         assert_eq!(tok.vocab_len(), 4);
         assert_eq!(tok.encode("aba"), vec![43, 44, 43]);

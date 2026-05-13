@@ -256,7 +256,11 @@ impl App {
                         Level::Info,
                         format!(
                             "silenced: {}",
-                            if sil.is_empty() { "—".into() } else { sil.join(",") }
+                            if sil.is_empty() {
+                                "—".into()
+                            } else {
+                                sil.join(",")
+                            }
                         ),
                     );
                     return None;
@@ -274,7 +278,10 @@ impl App {
                     .copied()
                     .filter(|l| !keep.contains(l))
                     .collect();
-                self.append(Level::Info, format!("filter set · showing: {}", args.join(",")));
+                self.append(
+                    Level::Info,
+                    format!("filter set · showing: {}", args.join(",")),
+                );
                 None
             }
             "listen" => Some(UiCommand::Listen),
@@ -507,11 +514,16 @@ fn draw_tabs(f: &mut Frame, area: Rect, app: &App) {
 
 fn draw_chips(f: &mut Frame, area: Rect, app: &App) {
     let mut spans: Vec<Span> = Vec::new();
-    spans.push(Span::styled("filters ", Style::default().fg(Color::DarkGray)));
+    spans.push(Span::styled(
+        "filters ",
+        Style::default().fg(Color::DarkGray),
+    ));
     for lvl in Level::all() {
         let active = !app.silenced.contains(&lvl);
         let style = if active {
-            Style::default().fg(lvl.color()).add_modifier(Modifier::BOLD)
+            Style::default()
+                .fg(lvl.color())
+                .add_modifier(Modifier::BOLD)
         } else {
             Style::default()
                 .fg(Color::DarkGray)
@@ -534,7 +546,12 @@ fn draw_log(f: &mut Frame, area: Rect, app: &App) {
         .map(|l| {
             let elapsed = l.ts.saturating_duration_since(app.session_start);
             let secs = elapsed.as_secs();
-            let ts = format!("{:02}:{:02}:{:02}", secs / 3600, (secs / 60) % 60, secs % 60);
+            let ts = format!(
+                "{:02}:{:02}:{:02}",
+                secs / 3600,
+                (secs / 60) % 60,
+                secs % 60
+            );
             Line::from(vec![
                 Span::styled(format!("{ts} "), Style::default().fg(Color::DarkGray)),
                 Span::styled(
@@ -552,10 +569,18 @@ fn draw_log(f: &mut Frame, area: Rect, app: &App) {
 }
 
 fn draw_prompt(f: &mut Frame, area: Rect, app: &App) {
-    let title = if app.busy { " prompt · busy " } else { " prompt " };
+    let title = if app.busy {
+        " prompt · busy "
+    } else {
+        " prompt "
+    };
     let block = Block::default()
         .borders(Borders::ALL)
-        .border_style(Style::default().fg(if app.busy { Color::Yellow } else { Color::DarkGray }))
+        .border_style(Style::default().fg(if app.busy {
+            Color::Yellow
+        } else {
+            Color::DarkGray
+        }))
         .title(title);
     let inner = block.inner(area);
     f.render_widget(block, area);
@@ -567,7 +592,10 @@ fn draw_prompt(f: &mut Frame, area: Rect, app: &App) {
     } else {
         Span::raw(app.prompt.clone())
     };
-    f.render_widget(Paragraph::new(Line::from(vec![Span::raw("> "), display])), inner);
+    f.render_widget(
+        Paragraph::new(Line::from(vec![Span::raw("> "), display])),
+        inner,
+    );
     // place cursor (only when something is typed; else leave hidden)
     let cursor_col = inner.x + 2 + app.cursor as u16;
     if cursor_col < inner.x + inner.width {
@@ -577,7 +605,11 @@ fn draw_prompt(f: &mut Frame, area: Rect, app: &App) {
 
 fn draw_status(f: &mut Frame, area: Rect, app: &App) {
     let dot = if app.connected { "●" } else { "○" };
-    let dot_style = Style::default().fg(if app.connected { Color::Green } else { Color::Red });
+    let dot_style = Style::default().fg(if app.connected {
+        Color::Green
+    } else {
+        Color::Red
+    });
     let elapsed = app.state_since.elapsed().as_secs();
     let sil = if app.silenced.is_empty() {
         "—".to_string()
@@ -592,14 +624,22 @@ fn draw_status(f: &mut Frame, area: Rect, app: &App) {
         Span::styled(format!("{dot} "), dot_style),
         Span::styled(
             format!("state={} ", app.state),
-            Style::default().fg(Color::White).add_modifier(Modifier::BOLD),
+            Style::default()
+                .fg(Color::White)
+                .add_modifier(Modifier::BOLD),
         ),
-        Span::styled(format!("· {elapsed}s "), Style::default().fg(Color::DarkGray)),
+        Span::styled(
+            format!("· {elapsed}s "),
+            Style::default().fg(Color::DarkGray),
+        ),
         Span::styled(
             format!("· buf={}/{} ", app.lines.len(), BUFFER_CAP),
             Style::default().fg(Color::DarkGray),
         ),
-        Span::styled(format!("· silenced={sil} "), Style::default().fg(Color::DarkGray)),
+        Span::styled(
+            format!("· silenced={sil} "),
+            Style::default().fg(Color::DarkGray),
+        ),
         Span::styled(
             format!("· tab={}", app.tab.title()),
             Style::default().fg(Color::DarkGray),

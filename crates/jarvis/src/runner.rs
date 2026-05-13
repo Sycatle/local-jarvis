@@ -5,15 +5,18 @@ use std::sync::Arc;
 use anyhow::Result;
 use jarvis_audio::{Capture, PcmPlayer};
 use jarvis_core::config::Config;
+use jarvis_core::config::TtsEngine;
 use jarvis_llm::engine::StubEngine;
 use jarvis_llm::{ChatHistory, ChatMessage};
+use jarvis_mcp::{
+    CompositeToolRegistry, McpCfg as McpAdapterCfg, McpRegistry,
+    McpServerCfg as McpAdapterServerCfg,
+};
 use jarvis_memory::Memory;
 use jarvis_service::ServiceHandle;
-use jarvis_mcp::{CompositeToolRegistry, McpCfg as McpAdapterCfg, McpRegistry, McpServerCfg as McpAdapterServerCfg};
 use jarvis_skills::{MediaSkills, Skill, SkillRegistry, SystemSkills};
 use jarvis_stt::whisper::WhisperConfig;
 use jarvis_stt::WhisperStt;
-use jarvis_core::config::TtsEngine;
 use jarvis_tts::piper::{PiperConfig, PiperTts};
 use jarvis_tts::EspeakNgPhonemiser;
 use jarvis_wake::clap::ClapConfig;
@@ -73,7 +76,10 @@ pub async fn run() -> Result<()> {
         match Memory::open(&config.memory.path) {
             Ok(m) => Some(Arc::new(m)),
             Err(e) => {
-                tracing::warn!("memory disabled — open {:?} failed: {e:#}", config.memory.path);
+                tracing::warn!(
+                    "memory disabled — open {:?} failed: {e:#}",
+                    config.memory.path
+                );
                 None
             }
         }
@@ -122,7 +128,11 @@ pub async fn run() -> Result<()> {
     }
     tracing::info!(
         "native skills registered: {:?}",
-        registry.audit().into_iter().map(|(n, _)| n).collect::<Vec<_>>()
+        registry
+            .audit()
+            .into_iter()
+            .map(|(n, _)| n)
+            .collect::<Vec<_>>()
     );
     let skills = Arc::new(registry);
 
@@ -175,10 +185,7 @@ pub async fn run() -> Result<()> {
                 };
                 match jarvis_llm::LlamaEngine::load(cfg) {
                     Ok(e) => {
-                        tracing::info!(
-                            "LLM: llama.cpp ({} GPU layers)",
-                            config.llm.n_gpu_layers
-                        );
+                        tracing::info!("LLM: llama.cpp ({} GPU layers)", config.llm.n_gpu_layers);
                         Arc::new(e) as Arc<dyn jarvis_llm::engine::LlmEngine>
                     }
                     Err(e) => {
@@ -316,9 +323,7 @@ fn config_to_mcp(cfg: &Config) -> McpAdapterCfg {
     McpAdapterCfg { servers }
 }
 
-async fn build_kokoro_or_fallback(
-    config: &Config,
-) -> Arc<dyn jarvis_tts::piper::TtsBackend> {
+async fn build_kokoro_or_fallback(config: &Config) -> Arc<dyn jarvis_tts::piper::TtsBackend> {
     let phon = Arc::new(EspeakNgPhonemiser::new()) as Arc<dyn jarvis_tts::Phonemiser>;
     let kcfg = jarvis_tts::KokoroConfig {
         model: config.tts.kokoro.model.clone(),
@@ -389,10 +394,7 @@ fn check_mic_gain() {
     };
     let text = String::from_utf8_lossy(&out);
     // Output looks like: "Volume: 0.36" or "Volume: 0.36 [MUTED]".
-    let Some(v) = text
-        .split_whitespace()
-        .find_map(|t| t.parse::<f32>().ok())
-    else {
+    let Some(v) = text.split_whitespace().find_map(|t| t.parse::<f32>().ok()) else {
         return;
     };
     if text.contains("[MUTED]") {

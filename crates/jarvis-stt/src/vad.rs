@@ -98,11 +98,9 @@ impl EnergyVad {
         let silence_dur = now.duration_since(last_voiced);
         let speech_dur = now.duration_since(started_at);
 
-        let silence_long_enough = silence_dur
-            >= Duration::from_millis(self.cfg.silence_ms as u64)
+        let silence_long_enough = silence_dur >= Duration::from_millis(self.cfg.silence_ms as u64)
             && speech_dur >= Duration::from_millis(self.cfg.min_speech_ms as u64);
-        let max_reached =
-            speech_dur >= Duration::from_secs(self.cfg.max_utterance_s as u64);
+        let max_reached = speech_dur >= Duration::from_secs(self.cfg.max_utterance_s as u64);
         if silence_long_enough || max_reached {
             self.in_speech = false;
             self.speech_started_at = None;

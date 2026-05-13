@@ -65,10 +65,7 @@ struct EchoSkill {
     calls: Arc<Mutex<Vec<String>>>,
 }
 
-#[skill(
-    name = "echo",
-    description = "Echo back a string — testing skill."
-)]
+#[skill(name = "echo", description = "Echo back a string — testing skill.")]
 impl EchoSkill {
     fn capabilities(&self) -> Capabilities {
         Capabilities::none()

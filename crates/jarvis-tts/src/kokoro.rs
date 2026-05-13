@@ -14,7 +14,7 @@ use async_trait::async_trait;
 use thiserror::Error;
 use tokio_util::sync::CancellationToken;
 
-use crate::phonemize::{Phonemiser, PhonemiseError};
+use crate::phonemize::{PhonemiseError, Phonemiser};
 use crate::piper::{PiperTtsError, TtsBackend};
 
 #[cfg(feature = "kokoro")]
@@ -91,10 +91,7 @@ pub struct KokoroTts {
 
 #[cfg(feature = "kokoro")]
 impl KokoroTts {
-    pub fn load(
-        cfg: &KokoroConfig,
-        phonemiser: Arc<dyn Phonemiser>,
-    ) -> Result<Self, KokoroError> {
+    pub fn load(cfg: &KokoroConfig, phonemiser: Arc<dyn Phonemiser>) -> Result<Self, KokoroError> {
         if !cfg.model.is_file() {
             return Err(KokoroError::ModelMissing(cfg.model.clone()));
         }
@@ -279,7 +276,9 @@ fn run_session(
 fn load_voice_bin(path: &Path) -> Result<Vec<Vec<f32>>, KokoroError> {
     let bytes = std::fs::read(path).map_err(|e| KokoroError::Ort(format!("read voice: {e}")))?;
     if bytes.len() % (STYLE_DIM * 4) != 0 {
-        return Err(KokoroError::BadVoiceSize { actual: bytes.len() });
+        return Err(KokoroError::BadVoiceSize {
+            actual: bytes.len(),
+        });
     }
     let n_slots = bytes.len() / (STYLE_DIM * 4);
     let mut out = Vec::with_capacity(n_slots);

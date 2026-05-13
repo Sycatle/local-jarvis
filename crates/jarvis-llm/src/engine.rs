@@ -12,11 +12,7 @@ pub trait LlmEngine: Send + Sync {
     /// Run a constrained generation given the chat history and the available
     /// tools. Returns the raw JSON string the model produced (the caller
     /// parses it via the grammar).
-    async fn generate(
-        &self,
-        history: &ChatHistory,
-        tools: &[ToolSpec],
-    ) -> anyhow::Result<String>;
+    async fn generate(&self, history: &ChatHistory, tools: &[ToolSpec]) -> anyhow::Result<String>;
 
     /// Token-streaming variant. Default impl buffers `generate()` and yields a
     /// single chunk so callers can write streaming-first code that still works
@@ -106,8 +102,7 @@ impl LlmEngine for ScriptedStreamEngine {
         _history: &'a ChatHistory,
         _tools: &'a [ToolSpec],
     ) -> anyhow::Result<BoxStream<'a, anyhow::Result<String>>> {
-        let toks: Vec<anyhow::Result<String>> =
-            self.tokens.iter().cloned().map(Ok).collect();
+        let toks: Vec<anyhow::Result<String>> = self.tokens.iter().cloned().map(Ok).collect();
         Ok(stream::iter(toks).boxed())
     }
 }

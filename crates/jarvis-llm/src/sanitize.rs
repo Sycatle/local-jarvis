@@ -13,7 +13,9 @@ use regex::Regex;
 fn re_emphasis() -> &'static Regex {
     static R: OnceLock<Regex> = OnceLock::new();
     // **bold** / __bold__ / *italic* / _italic_ → inner text only.
-    R.get_or_init(|| Regex::new(r"(?:\*\*|__)(.+?)(?:\*\*|__)|(?:\*|_)([^*_\n]+?)(?:\*|_)").unwrap())
+    R.get_or_init(|| {
+        Regex::new(r"(?:\*\*|__)(.+?)(?:\*\*|__)|(?:\*|_)([^*_\n]+?)(?:\*|_)").unwrap()
+    })
 }
 
 fn re_code_block() -> &'static Regex {
@@ -58,10 +60,8 @@ fn re_emoji_misc() -> &'static Regex {
     static R: OnceLock<Regex> = OnceLock::new();
     // Strip common pictographs / dingbats. Not exhaustive, but cheap.
     R.get_or_init(|| {
-        Regex::new(
-            r"[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{2300}-\u{23FF}\u{2700}-\u{27BF}]",
-        )
-        .unwrap()
+        Regex::new(r"[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{2300}-\u{23FF}\u{2700}-\u{27BF}]")
+            .unwrap()
     })
 }
 
@@ -144,15 +144,15 @@ mod tests {
     #[test]
     fn strips_bold_italic() {
         assert_eq!(for_tts("**Bonjour** Sir."), "Bonjour Sir.");
-        assert_eq!(for_tts("Voici un mot _important_."), "Voici un mot important.");
+        assert_eq!(
+            for_tts("Voici un mot _important_."),
+            "Voici un mot important."
+        );
     }
 
     #[test]
     fn unwraps_json_response() {
-        assert_eq!(
-            for_tts(r#"{"response": "Il est 14h00."}"#),
-            "Il est 14h00."
-        );
+        assert_eq!(for_tts(r#"{"response": "Il est 14h00."}"#), "Il est 14h00.");
     }
 
     #[test]

@@ -110,9 +110,9 @@ mod backend {
     const MEL_WINDOW: usize = 76; // openWakeWord embedding input length
     const EMBED_DIM: usize = 96;
     const WAKE_WINDOW: usize = 16; // wake-model input length
-    // Empirical: the mel model embeds an internal log-mel scaling that's
-    // ~10× the value openWakeWord's embedding model expects. The reference
-    // python pipeline divides by 10 before feeding the embedding model.
+                                   // Empirical: the mel model embeds an internal log-mel scaling that's
+                                   // ~10× the value openWakeWord's embedding model expects. The reference
+                                   // python pipeline divides by 10 before feeding the embedding model.
     const MEL_DIVISOR: f32 = 10.0;
 
     pub(super) struct State {
@@ -158,7 +158,10 @@ mod backend {
 
             tracing::info!(
                 "openWakeWord loaded: wake={:?} mel_in={:?} embed_in={:?} wake_in={:?}",
-                cfg.model, mel_input, embed_input, wake_input
+                cfg.model,
+                mel_input,
+                embed_input,
+                wake_input
             );
 
             Some(Self {
@@ -262,11 +265,8 @@ mod backend {
         input_name: &str,
         mel_window: &[f32],
     ) -> Result<Vec<f32>, ort::Error> {
-        let arr = Array::from_shape_vec(
-            (1, MEL_WINDOW, MEL_FEATURES, 1),
-            mel_window.to_vec(),
-        )
-        .map_err(|e| ort::Error::new(format!("embed shape: {e}")))?;
+        let arr = Array::from_shape_vec((1, MEL_WINDOW, MEL_FEATURES, 1), mel_window.to_vec())
+            .map_err(|e| ort::Error::new(format!("embed shape: {e}")))?;
         let tensor = Tensor::from_array(arr)?;
         let outputs = session.run(ort::inputs![input_name => tensor])?;
         let (_shape, data) = outputs[0].try_extract_tensor::<f32>()?;
@@ -278,11 +278,8 @@ mod backend {
         input_name: &str,
         embed_window: &[f32],
     ) -> Result<f32, ort::Error> {
-        let arr = Array::from_shape_vec(
-            (1, WAKE_WINDOW, EMBED_DIM),
-            embed_window.to_vec(),
-        )
-        .map_err(|e| ort::Error::new(format!("wake shape: {e}")))?;
+        let arr = Array::from_shape_vec((1, WAKE_WINDOW, EMBED_DIM), embed_window.to_vec())
+            .map_err(|e| ort::Error::new(format!("wake shape: {e}")))?;
         let tensor = Tensor::from_array(arr)?;
         let outputs = session.run(ort::inputs![input_name => tensor])?;
         let (_shape, data) = outputs[0].try_extract_tensor::<f32>()?;
