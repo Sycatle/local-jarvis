@@ -1,0 +1,24 @@
+[package]
+name = "jarvis-memory"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[features]
+default = []
+# Pull in onnxruntime + HuggingFace tokenizer to enable BgeSmallEmbedder.
+# Off by default so the workspace stays light when RAG is unused.
+embed = ["dep:ort", "dep:ndarray", "dep:tokenizers"]
+
+[dependencies]
+anyhow = { workspace = true }
+thiserror = { workspace = true }
+tracing = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+rusqlite = { workspace = true }
+chrono = { workspace = true }
+ort = { workspace = true, optional = true }
+ndarray = { workspace = true, optional = true }
+tokenizers = { version = "0.20", default-features = false, features = ["onig"], optional = true }

@@ -2,6 +2,7 @@
 resolver = "2"
 members = [
     "crates/jarvis-core",
+    "crates/jarvis-memory",
 ]
 
 [workspace.package]
@@ -65,6 +66,7 @@ proc-macro2 = "1"
 
 # Internal crates
 jarvis-core = { path = "crates/jarvis-core" }
+jarvis-memory = { path = "crates/jarvis-memory" }
 
 [profile.release]
 lto = "thin"
