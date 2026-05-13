@@ -17,7 +17,11 @@ default = []
 llama = ["jarvis-llm/llama"]
 whisper = ["jarvis-stt/whisper"]
 embed = ["jarvis-memory/embed"]
-cuda = ["llama", "whisper", "jarvis-llm/cuda", "jarvis-stt/cuda", "jarvis-tts/cuda"]
+# `cuda` n'inclut pas `jarvis-stt/cuda` : whisper-rs/cuda fournit son propre
+# ggml qui entre en conflit avec celui de llama-cpp-2/cuda dans le même process
+# (segfault à l'init du second backend). STT reste sur CPU — médiumFR fait
+# 5 s d'audio en ~600 ms sur 4 cœurs, suffisant.
+cuda = ["llama", "whisper", "jarvis-llm/cuda", "jarvis-tts/cuda"]
 
 [dependencies]
 jarvis-core = { workspace = true }

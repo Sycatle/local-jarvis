@@ -160,18 +160,13 @@ réponse parlée. Sinon, réponds en texte simple, directement."
         .to_string()
 }
 
-#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, Default, Serialize, Deserialize, PartialEq, Eq)]
 #[serde(rename_all = "lowercase")]
 pub enum TtsEngine {
+    #[default]
     Kokoro,
     Piper,
     Espeak,
-}
-
-impl Default for TtsEngine {
-    fn default() -> Self {
-        Self::Kokoro
-    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
