@@ -13,7 +13,7 @@ use std::sync::Arc;
 
 use async_trait::async_trait;
 use tokio::sync::{mpsc, watch};
-use zbus::{interface, object_server::SignalContext, Connection};
+use zbus::{interface, object_server::SignalEmitter, Connection};
 
 pub const BUS_NAME: &str = "org.jarvis.Assistant";
 pub const OBJECT_PATH: &str = "/org/jarvis/Assistant";
@@ -68,13 +68,13 @@ impl Service {
     }
 
     #[zbus(signal)]
-    async fn state_changed(emitter: &SignalContext<'_>, state: &str) -> zbus::Result<()>;
+    async fn state_changed(emitter: &SignalEmitter<'_>, state: &str) -> zbus::Result<()>;
 
     #[zbus(signal)]
-    async fn transcribed(emitter: &SignalContext<'_>, text: &str) -> zbus::Result<()>;
+    async fn transcribed(emitter: &SignalEmitter<'_>, text: &str) -> zbus::Result<()>;
 
     #[zbus(signal)]
-    async fn spoken(emitter: &SignalContext<'_>, text: &str) -> zbus::Result<()>;
+    async fn spoken(emitter: &SignalEmitter<'_>, text: &str) -> zbus::Result<()>;
 
     /// Emitted once per ReAct iteration. `action` is empty when the model
     /// produced a final reply rather than a tool call; `observation` is empty
@@ -82,7 +82,7 @@ impl Service {
     /// tool-using step — once at dispatch, once after the result).
     #[zbus(signal)]
     async fn step_taken(
-        emitter: &SignalContext<'_>,
+        emitter: &SignalEmitter<'_>,
         iteration: u32,
         thought: &str,
         action: &str,
@@ -115,7 +115,7 @@ impl ServiceHandle {
             .object_server()
             .interface::<_, Service>(OBJECT_PATH)
             .await?;
-        Service::state_changed(iface_ref.signal_context(), state).await?;
+        Service::state_changed(iface_ref.signal_emitter(), state).await?;
         Ok(())
     }
 
@@ -125,7 +125,7 @@ impl ServiceHandle {
             .object_server()
             .interface::<_, Service>(OBJECT_PATH)
             .await?;
-        Service::transcribed(iface_ref.signal_context(), text).await?;
+        Service::transcribed(iface_ref.signal_emitter(), text).await?;
         Ok(())
     }
 
@@ -135,7 +135,7 @@ impl ServiceHandle {
             .object_server()
             .interface::<_, Service>(OBJECT_PATH)
             .await?;
-        Service::spoken(iface_ref.signal_context(), text).await?;
+        Service::spoken(iface_ref.signal_emitter(), text).await?;
         Ok(())
     }
 
@@ -152,7 +152,7 @@ impl ServiceHandle {
             .interface::<_, Service>(OBJECT_PATH)
             .await?;
         Service::step_taken(
-            iface_ref.signal_context(),
+            iface_ref.signal_emitter(),
             iteration,
             thought,
             action,

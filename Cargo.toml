@@ -63,7 +63,7 @@ llama-cpp-2 = "0.1"
 espeakng-sys = "0.1"
 
 # D-Bus
-zbus = { version = "4", default-features = false, features = ["tokio"] }
+zbus = { version = "5", default-features = false, features = ["tokio"] }
 
 # Storage / time
 rusqlite = { version = "0.31", features = ["bundled"] }
