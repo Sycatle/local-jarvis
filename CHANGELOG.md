@@ -12,13 +12,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Bumped `actions/checkout` 4 → 6 and `googleapis/release-please-action` 4 → 5
   in CI workflows.
 - Bumped `toml` 0.8 → 1.1, `tokenizers` 0.20 → 0.23, `directories` 5 → 6,
-  `cpal` 0.15 → 0.17, and `whisper-rs` 0.13 → 0.16.
+  `cpal` 0.15 → 0.17, `whisper-rs` 0.13 → 0.16, `crossterm` 0.28 → 0.29, and
+  `thiserror` 1.0 → 2.0.
 - Adapted `crates/jarvis-audio` for the `cpal::SampleRate` type alias change
   (no more tuple-struct constructor).
 - Adapted `crates/jarvis-stt` for the whisper-rs 0.16 API
   (`set_suppress_nst`, `WhisperState::get_segment`).
 - Hardened clippy compliance under Rust 1.95 (derivable `Default`, collapsed
   `match` patterns).
+
+### Fixed
+
+- `jarvis run` now prints a startup hint on stderr so a first-time user
+  knows the daemon is up before the first wake event.
+- `jarvis status`, `say`, `listen`, and `cancel` now translate the
+  D-Bus `ServiceUnknown` error into an actionable message pointing at
+  `systemctl --user start jarvis`.
 
 ### Removed
 
