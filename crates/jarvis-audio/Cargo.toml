@@ -13,7 +13,6 @@ tracing = { workspace = true }
 tokio = { workspace = true }
 tokio-util = { workspace = true }
 cpal = { workspace = true }
-rubato = { workspace = true }
 
 [dev-dependencies]
 tokio = { workspace = true }

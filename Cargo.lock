@@ -1413,7 +1413,6 @@ dependencies = [
  "anyhow",
  "cpal",
  "jarvis-core",
- "rubato",
  "thiserror 1.0.69",
  "tokio",
  "tokio-util",
@@ -1583,7 +1582,6 @@ dependencies = [
  "ndarray",
  "ort",
  "realfft",
- "rubato",
  "thiserror 1.0.69",
  "tokio",
  "tracing",
@@ -2533,18 +2531,6 @@ name = "regex-syntax"
 version = "0.8.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "dc897dd8d9e8bd1ed8cdad82b5966c3e0ecae09fb1907d58efaa013543185d0a"
-
-[[package]]
-name = "rubato"
-version = "0.15.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b5d18b486e7d29a408ef3f825bc1327d8f87af091c987ca2f5b734625940e234"
-dependencies = [
- "num-complex",
- "num-integer",
- "num-traits",
- "realfft",
-]
 
 [[package]]
 name = "rusqlite"
