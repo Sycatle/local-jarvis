@@ -86,7 +86,15 @@ async fn main() -> Result<()> {
     init_logging();
     let cli = Cli::parse();
     match cli.command {
-        Command::Run => runner::run().await,
+        Command::Run => {
+            // Friendly heads-up before the logger eats stdout — a first-time
+            // user otherwise sees nothing until a wake event fires.
+            eprintln!(
+                "starting jarvis daemon — logs at this level only; \
+                 set RUST_LOG=jarvis=debug,info for more"
+            );
+            runner::run().await
+        }
         Command::Tui => tui::run().await,
         Command::Say { text } => client::call_speak(&text).await,
         Command::Listen => {
@@ -171,7 +179,7 @@ fn init_logging() {
 }
 
 mod client {
-    use anyhow::Result;
+    use anyhow::{anyhow, Result};
     use jarvis_service::{BUS_NAME, OBJECT_PATH};
     use zbus::Connection;
 
@@ -184,29 +192,43 @@ mod client {
         Ok(p)
     }
 
+    // Map zbus's `ServiceUnknown` into a human-actionable hint. Without this,
+    // a user running `jarvis status` while the daemon is down sees a raw
+    // `org.freedesktop.DBus.Error.ServiceUnknown: The name … is not activatable`.
+    fn friendly(e: zbus::Error) -> anyhow::Error {
+        let msg = e.to_string();
+        if msg.contains("ServiceUnknown") || msg.contains("not activatable") {
+            return anyhow!(
+                "jarvis daemon is not running. Start it with `systemctl --user start jarvis` \
+                 or `jarvis run` in another terminal."
+            );
+        }
+        anyhow::Error::from(e)
+    }
+
     pub async fn call_speak(text: &str) -> Result<()> {
         let p = proxy().await?;
-        p.call_method("Speak", &(text,)).await?;
+        p.call_method("Speak", &(text,)).await.map_err(friendly)?;
         Ok(())
     }
 
     pub async fn call_listen() -> Result<String> {
         let p = proxy().await?;
-        let m = p.call_method("Listen", &()).await?;
+        let m = p.call_method("Listen", &()).await.map_err(friendly)?;
         let body: String = m.body().deserialize()?;
         Ok(body)
     }
 
     pub async fn call_status() -> Result<String> {
         let p = proxy().await?;
-        let m = p.call_method("Status", &()).await?;
+        let m = p.call_method("Status", &()).await.map_err(friendly)?;
         let body: String = m.body().deserialize()?;
         Ok(body)
     }
 
     pub async fn call_cancel() -> Result<()> {
         let p = proxy().await?;
-        p.call_method("Cancel", &()).await?;
+        p.call_method("Cancel", &()).await.map_err(friendly)?;
         Ok(())
     }
 }
