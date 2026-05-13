@@ -1,0 +1,19 @@
+Jarvis — local voice assistant for Linux
+Copyright 2026 sycatle
+
+This product is dual-licensed under the MIT License (LICENSE-MIT) and the
+Apache License, Version 2.0 (LICENSE-APACHE). You may choose either license
+when redistributing or modifying this work.
+
+This product bundles or relies on third-party software:
+
+  - whisper.cpp models (https://github.com/ggerganov/whisper.cpp) — MIT.
+  - Qwen2.5-3B-Instruct GGUF (https://huggingface.co/Qwen) — Apache 2.0.
+  - openWakeWord (https://github.com/dscripka/openWakeWord) — Apache 2.0.
+  - Silero VAD (https://github.com/snakers4/silero-vad) — MIT.
+  - Kokoro-82M (https://huggingface.co/hexgrad/Kokoro-82M) — Apache 2.0.
+  - eSpeak NG (https://github.com/espeak-ng/espeak-ng) — GPL-3.0 (linked at
+    runtime via libespeak-ng; not redistributed with this source tree).
+
+Models are downloaded by `scripts/setup.sh` and are not part of this
+distribution. Their respective licenses apply to the downloaded artifacts.
