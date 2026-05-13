@@ -2,7 +2,7 @@ use std::sync::Arc;
 use std::thread;
 
 use cpal::traits::{DeviceTrait, HostTrait, StreamTrait};
-use cpal::{SampleFormat, SampleRate, StreamConfig};
+use cpal::{SampleFormat, StreamConfig};
 use thiserror::Error;
 use tokio::sync::broadcast;
 
@@ -57,7 +57,7 @@ impl Capture {
             let channels = supported.channels() as usize;
             let config = StreamConfig {
                 channels: supported.channels(),
-                sample_rate: SampleRate(sample_rate),
+                sample_rate,
                 buffer_size: cpal::BufferSize::Default,
             };
 
