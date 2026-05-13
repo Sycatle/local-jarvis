@@ -9,6 +9,7 @@ members = [
     "crates/jarvis-desktop",
     "crates/jarvis-service",
     "crates/jarvis-wake",
+    "crates/jarvis-stt",
 ]
 
 [workspace.package]
@@ -79,6 +80,7 @@ jarvis-llm = { path = "crates/jarvis-llm" }
 jarvis-desktop = { path = "crates/jarvis-desktop" }
 jarvis-service = { path = "crates/jarvis-service" }
 jarvis-wake = { path = "crates/jarvis-wake" }
+jarvis-stt = { path = "crates/jarvis-stt" }
 
 [profile.release]
 lto = "thin"

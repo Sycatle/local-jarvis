@@ -1,0 +1,23 @@
+[package]
+name = "jarvis-stt"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[features]
+default = []
+# Real STT via whisper-rs. Off by default; enable to build whisper.cpp from
+# source (bundled with the binding).
+whisper = ["dep:whisper-rs"]
+# Build whisper.cpp with CUDA.
+cuda = ["whisper", "whisper-rs/cuda"]
+
+[dependencies]
+jarvis-core = { workspace = true }
+jarvis-audio = { workspace = true }
+anyhow = { workspace = true }
+thiserror = { workspace = true }
+tracing = { workspace = true }
+tokio = { workspace = true }
+whisper-rs = { workspace = true, optional = true }
