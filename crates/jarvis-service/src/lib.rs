@@ -7,7 +7,9 @@
 //! - `Status() -> (s)` — current state
 //! - `Cancel() -> ()` — interrupt TTS
 //!
-//! Emits `StateChanged(s)`, `Transcribed(s)`, `Spoken(s)`.
+//! Emits `StateChanged(s)`, `Transcribed(s)`, `Spoken(s)`, and
+//! `StepTaken(u iteration, s thought, s action, s observation)` (one per
+//! ReAct iteration).
 
 use std::sync::Arc;
 
