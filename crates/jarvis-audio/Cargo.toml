@@ -1,0 +1,29 @@
+[package]
+name = "jarvis-audio"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[dependencies]
+jarvis-core = { workspace = true }
+anyhow = { workspace = true }
+thiserror = { workspace = true }
+tracing = { workspace = true }
+tokio = { workspace = true }
+tokio-util = { workspace = true }
+cpal = { workspace = true }
+rubato = { workspace = true }
+
+[dev-dependencies]
+tokio = { workspace = true }
+anyhow = { workspace = true }
+tracing-subscriber = { workspace = true }
+
+[[example]]
+name = "ding"
+path = "examples/ding.rs"
+
+[[example]]
+name = "loopback"
+path = "examples/loopback.rs"

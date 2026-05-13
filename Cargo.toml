@@ -4,6 +4,7 @@ members = [
     "crates/jarvis-core",
     "crates/jarvis-memory",
     "crates/jarvis-skills-macros",
+    "crates/jarvis-audio",
 ]
 
 [workspace.package]
@@ -69,6 +70,7 @@ proc-macro2 = "1"
 jarvis-core = { path = "crates/jarvis-core" }
 jarvis-memory = { path = "crates/jarvis-memory" }
 jarvis-skills-macros = { path = "crates/jarvis-skills-macros" }
+jarvis-audio = { path = "crates/jarvis-audio" }
 
 [profile.release]
 lto = "thin"
