@@ -21,4 +21,4 @@ rusqlite = { workspace = true }
 chrono = { workspace = true }
 ort = { workspace = true, optional = true }
 ndarray = { workspace = true, optional = true }
-tokenizers = { version = "0.20", default-features = false, features = ["onig"], optional = true }
+tokenizers = { version = "0.23", default-features = false, features = ["onig"], optional = true }
