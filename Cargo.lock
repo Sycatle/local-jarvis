@@ -1571,7 +1571,7 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "chrono",
- "ndarray",
+ "ndarray 0.17.2",
  "ort",
  "rusqlite",
  "serde",
@@ -1643,7 +1643,7 @@ dependencies = [
  "async-trait",
  "jarvis-audio",
  "jarvis-core",
- "ndarray",
+ "ndarray 0.17.2",
  "once_cell",
  "ort",
  "serde",
@@ -1662,7 +1662,7 @@ dependencies = [
  "hound",
  "jarvis-audio",
  "jarvis-core",
- "ndarray",
+ "ndarray 0.17.2",
  "ort",
  "realfft",
  "thiserror 2.0.18",
@@ -1996,6 +1996,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "ndarray"
+version = "0.17.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "520080814a7a6b4a6e9070823bb24b4531daac8c4627e08ba5de8c5ef2f2752d"
+dependencies = [
+ "matrixmultiply",
+ "num-complex",
+ "num-integer",
+ "num-traits",
+ "portable-atomic",
+ "portable-atomic-util",
+ "rawpointer",
+]
+
+[[package]]
 name = "ndk"
 version = "0.9.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2304,7 +2319,7 @@ version = "2.0.0-rc.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1fa7e49bd669d32d7bc2a15ec540a527e7764aec722a45467814005725bcd721"
 dependencies = [
- "ndarray",
+ "ndarray 0.16.1",
  "ort-sys",
  "smallvec 2.0.0-alpha.10",
  "tracing",

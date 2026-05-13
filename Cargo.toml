@@ -55,7 +55,7 @@ hound = "3"
 
 # ML inference
 ort = { version = "=2.0.0-rc.10", default-features = false, features = ["std", "download-binaries", "ndarray"] }
-ndarray = "0.16"
+ndarray = "0.17"
 whisper-rs = "0.16"
 llama-cpp-2 = "0.1"
 
