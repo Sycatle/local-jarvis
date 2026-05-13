@@ -1,0 +1,25 @@
+[package]
+name = "jarvis-wake"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[dependencies]
+jarvis-core = { workspace = true }
+jarvis-audio = { workspace = true }
+anyhow = { workspace = true }
+thiserror = { workspace = true }
+tracing = { workspace = true }
+tokio = { workspace = true }
+rubato = { workspace = true }
+realfft = { workspace = true }
+ort = { workspace = true, optional = true }
+ndarray = { workspace = true, optional = true }
+
+[features]
+default = ["openwakeword"]
+openwakeword = ["dep:ort", "dep:ndarray"]
+
+[dev-dependencies]
+hound = { workspace = true }
