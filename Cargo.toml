@@ -7,6 +7,7 @@ members = [
     "crates/jarvis-audio",
     "crates/jarvis-llm",
     "crates/jarvis-desktop",
+    "crates/jarvis-service",
 ]
 
 [workspace.package]
@@ -75,6 +76,7 @@ jarvis-skills-macros = { path = "crates/jarvis-skills-macros" }
 jarvis-audio = { path = "crates/jarvis-audio" }
 jarvis-llm = { path = "crates/jarvis-llm" }
 jarvis-desktop = { path = "crates/jarvis-desktop" }
+jarvis-service = { path = "crates/jarvis-service" }
 
 [profile.release]
 lto = "thin"

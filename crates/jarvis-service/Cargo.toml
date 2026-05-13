@@ -1,0 +1,15 @@
+[package]
+name = "jarvis-service"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[dependencies]
+jarvis-core = { workspace = true }
+anyhow = { workspace = true }
+thiserror = { workspace = true }
+tracing = { workspace = true }
+tokio = { workspace = true }
+zbus = { workspace = true }
+async-trait = { workspace = true }
