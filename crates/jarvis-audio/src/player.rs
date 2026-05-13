@@ -4,7 +4,7 @@ use std::sync::{Arc, Mutex};
 use std::thread;
 
 use cpal::traits::{DeviceTrait, HostTrait, StreamTrait};
-use cpal::{SampleFormat, SampleRate, StreamConfig};
+use cpal::{SampleFormat, StreamConfig};
 use thiserror::Error;
 
 #[derive(Debug, Error)]
@@ -36,7 +36,7 @@ impl Player {
         let channels = supported.channels() as usize;
         let config = StreamConfig {
             channels: supported.channels(),
-            sample_rate: SampleRate(sample_rate),
+            sample_rate,
             buffer_size: cpal::BufferSize::Default,
         };
 
@@ -153,7 +153,7 @@ impl PcmPlayer {
             let channels = supported.channels() as usize;
             let config = StreamConfig {
                 channels: supported.channels(),
-                sample_rate: SampleRate(sample_rate),
+                sample_rate,
                 buffer_size: cpal::BufferSize::Default,
             };
 
