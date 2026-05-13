@@ -49,7 +49,7 @@ directories = "5"
 clap = { version = "4", features = ["derive"] }
 
 # Audio / DSP
-cpal = "0.15"
+cpal = "0.17"
 realfft = "3"
 hound = "3"
 
