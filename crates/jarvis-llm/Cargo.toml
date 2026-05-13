@@ -10,7 +10,7 @@ license.workspace = true
 # C++ toolchain or CUDA. Enable with `cargo install --features llama` (CPU) or
 # `--features cuda` (CUDA offload via llama.cpp).
 default = []
-llama = ["dep:llama-cpp-2", "llama-cpp-2/dynamic-link"]
+llama = ["dep:llama-cpp-2", "llama-cpp-2/dynamic-link", "llama-cpp-2/dynamic-backends"]
 cuda = ["llama", "llama-cpp-2/cuda"]
 
 [dependencies]

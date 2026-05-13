@@ -95,7 +95,7 @@ mod backend {
             // segments, lock to deterministic sampling, and reject low-
             // confidence detections.
             params.set_suppress_blank(true);
-            params.set_suppress_non_speech_tokens(self.cfg.suppress_non_speech);
+            params.set_suppress_nst(self.cfg.suppress_non_speech);
             params.set_no_speech_thold(self.cfg.no_speech_threshold);
             params.set_temperature(0.0);
             params.set_no_context(true);
@@ -114,15 +114,16 @@ mod backend {
                 .full(params, samples)
                 .map_err(|e| WhisperSttError::Inference(format!("full: {e}")))?;
 
-            let n_segments = state
-                .full_n_segments()
-                .map_err(|e| WhisperSttError::Inference(format!("n_segments: {e}")))?;
+            let n_segments = state.full_n_segments();
             let mut out = String::new();
             for i in 0..n_segments {
-                let seg = state
-                    .full_get_segment_text(i)
+                let segment = state
+                    .get_segment(i)
+                    .ok_or_else(|| WhisperSttError::Inference(format!("seg {i} not found")))?;
+                let text = segment
+                    .to_str()
                     .map_err(|e| WhisperSttError::Inference(format!("seg {i}: {e}")))?;
-                out.push_str(seg.trim());
+                out.push_str(text.trim());
                 out.push(' ');
             }
             Ok(out.trim().to_string())
