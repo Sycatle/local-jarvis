@@ -22,18 +22,13 @@ pub struct NotificationOptions {
     pub priority: NotificationPriority,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
 pub enum NotificationPriority {
     Low,
+    #[default]
     Normal,
     High,
     Urgent,
-}
-
-impl Default for NotificationPriority {
-    fn default() -> Self {
-        Self::Normal
-    }
 }
 
 #[async_trait]

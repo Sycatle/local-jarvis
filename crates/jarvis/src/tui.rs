@@ -408,23 +408,17 @@ async fn handle_key(app: &mut App, k: KeyEvent, cmd_tx: &mpsc::Sender<UiCommand>
             let _ = cmd_tx.try_send(UiCommand::Cancel);
         }
         KeyCode::Esc => app.quit = true,
-        KeyCode::Left => {
-            if app.cursor > 0 {
-                app.cursor -= 1;
-            }
+        KeyCode::Left if app.cursor > 0 => {
+            app.cursor -= 1;
         }
-        KeyCode::Right => {
-            if app.cursor < app.prompt.chars().count() {
-                app.cursor += 1;
-            }
+        KeyCode::Right if app.cursor < app.prompt.chars().count() => {
+            app.cursor += 1;
         }
-        KeyCode::Backspace => {
-            if app.cursor > 0 {
-                let byte = char_byte(&app.prompt, app.cursor - 1);
-                let byte_end = char_byte(&app.prompt, app.cursor);
-                app.prompt.replace_range(byte..byte_end, "");
-                app.cursor -= 1;
-            }
+        KeyCode::Backspace if app.cursor > 0 => {
+            let byte = char_byte(&app.prompt, app.cursor - 1);
+            let byte_end = char_byte(&app.prompt, app.cursor);
+            app.prompt.replace_range(byte..byte_end, "");
+            app.cursor -= 1;
         }
         KeyCode::Delete => {
             let n = app.prompt.chars().count();
