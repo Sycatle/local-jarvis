@@ -1,0 +1,48 @@
+[package]
+name = "jarvis"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[[bin]]
+name = "jarvis"
+path = "src/main.rs"
+
+[features]
+# Wire the real ML backends. Off by default so the workspace builds without a
+# C++/CUDA toolchain. Pick one of {llama, cuda} for the LLM. `cuda` implies
+# `llama` so the runtime path in runner.rs is enabled.
+default = []
+llama = ["jarvis-llm/llama"]
+whisper = ["jarvis-stt/whisper"]
+embed = ["jarvis-memory/embed"]
+cuda = ["llama", "whisper", "jarvis-llm/cuda", "jarvis-stt/cuda", "jarvis-tts/cuda"]
+
+[dependencies]
+jarvis-core = { workspace = true }
+jarvis-audio = { workspace = true }
+jarvis-wake = { workspace = true }
+jarvis-stt = { workspace = true }
+jarvis-llm = { workspace = true }
+jarvis-tts = { workspace = true }
+jarvis-skills = { workspace = true }
+jarvis-mcp = { workspace = true }
+jarvis-memory = { workspace = true }
+jarvis-desktop = { workspace = true }
+jarvis-service = { workspace = true }
+anyhow = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+tracing-journald = { workspace = true }
+tokio = { workspace = true }
+tokio-util = { workspace = true }
+clap = { workspace = true }
+zbus = { workspace = true }
+serde_json = { workspace = true }
+async-trait = { workspace = true }
+futures = { workspace = true }
+toml = { workspace = true }
+serde = { workspace = true }
+ratatui = "0.29"
+crossterm = { version = "0.28", features = ["event-stream"] }

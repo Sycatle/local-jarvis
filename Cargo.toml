@@ -2,17 +2,18 @@
 resolver = "2"
 members = [
     "crates/jarvis-core",
-    "crates/jarvis-memory",
-    "crates/jarvis-skills-macros",
     "crates/jarvis-audio",
-    "crates/jarvis-llm",
-    "crates/jarvis-desktop",
-    "crates/jarvis-service",
     "crates/jarvis-wake",
     "crates/jarvis-stt",
+    "crates/jarvis-llm",
     "crates/jarvis-tts",
-    "crates/jarvis-mcp",
     "crates/jarvis-skills",
+    "crates/jarvis-skills-macros",
+    "crates/jarvis-mcp",
+    "crates/jarvis-desktop",
+    "crates/jarvis-service",
+    "crates/jarvis-memory",
+    "crates/jarvis",
 ]
 
 [workspace.package]
@@ -76,17 +77,17 @@ proc-macro2 = "1"
 
 # Internal crates
 jarvis-core = { path = "crates/jarvis-core" }
-jarvis-memory = { path = "crates/jarvis-memory" }
-jarvis-skills-macros = { path = "crates/jarvis-skills-macros" }
 jarvis-audio = { path = "crates/jarvis-audio" }
-jarvis-llm = { path = "crates/jarvis-llm" }
-jarvis-desktop = { path = "crates/jarvis-desktop" }
-jarvis-service = { path = "crates/jarvis-service" }
 jarvis-wake = { path = "crates/jarvis-wake" }
 jarvis-stt = { path = "crates/jarvis-stt" }
+jarvis-llm = { path = "crates/jarvis-llm" }
 jarvis-tts = { path = "crates/jarvis-tts" }
-jarvis-mcp = { path = "crates/jarvis-mcp" }
 jarvis-skills = { path = "crates/jarvis-skills" }
+jarvis-skills-macros = { path = "crates/jarvis-skills-macros" }
+jarvis-mcp = { path = "crates/jarvis-mcp" }
+jarvis-desktop = { path = "crates/jarvis-desktop" }
+jarvis-service = { path = "crates/jarvis-service" }
+jarvis-memory = { path = "crates/jarvis-memory" }
 
 [profile.release]
 lto = "thin"
