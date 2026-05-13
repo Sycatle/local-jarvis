@@ -50,7 +50,7 @@ clap = { version = "4", features = ["derive"] }
 
 # Audio / DSP
 cpal = "0.15"
-rubato = "0.15"
+rubato = "2.0"
 realfft = "3"
 hound = "3"
 
