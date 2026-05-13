@@ -3,9 +3,10 @@
 //! - [`clap`]: real-time double-clap detector — band-passed energy onsets
 //!   within a configurable window, mirroring the parameters of the original
 //!   Python POC (44.1 kHz / 1024-sample blocks / 1.5–6 kHz band).
-//! - [`wakeword`]: openWakeWord ONNX wrapper. Stubbed until the runtime is
-//!   wired through `ort` in a later phase — the manager handles its absence
-//!   gracefully.
+//! - [`wakeword`]: openWakeWord ONNX wrapper running on `ort` behind the
+//!   `openwakeword` cargo feature. The manager still handles the disabled or
+//!   misconfigured case gracefully (feature off, model files missing, or
+//!   capture sample rate ≠ wake-word rate).
 //! - [`manager`]: multiplexes both, owns the audio subscription, exposes
 //!   start/pause/resume/stop and a `WakeEvent` stream.
 
