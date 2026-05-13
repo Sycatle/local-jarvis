@@ -1,0 +1,79 @@
+name: Bug report
+description: Report a defect in Jarvis
+title: "bug: "
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to file a bug. Please fill out the form so
+        we can reproduce and triage quickly.
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What happened, in one or two sentences.
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      description: Minimal sequence of actions to trigger the bug.
+      placeholder: |
+        1. ...
+        2. ...
+        3. ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Jarvis version / commit
+      placeholder: "0.1.0 or git sha"
+    validations:
+      required: true
+  - type: input
+    id: distro
+    attributes:
+      label: Distro and kernel
+      placeholder: "Pop!_OS 24.04, kernel 6.18"
+    validations:
+      required: true
+  - type: input
+    id: audio
+    attributes:
+      label: Audio stack
+      placeholder: "PipeWire 1.5.x"
+  - type: input
+    id: gpu
+    attributes:
+      label: GPU and driver
+      placeholder: "NVIDIA RTX 3060, driver 580"
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      description: |
+        Output of `journalctl --user -u jarvis -n 200` (or stdout if running
+        in the foreground). Redact anything sensitive.
+      render: shell
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      options:
+        - label: I agree to follow this project's Code of Conduct.
+          required: true
