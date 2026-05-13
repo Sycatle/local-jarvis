@@ -1,13 +1,3 @@
-# Empêche les symboles ggml/whisper statiques du binaire principal de
-# "shadow" les exports de libggml.so (chargée dynamiquement par libllama.so).
-# Sans -Bsymbolic, le binaire exporte globalement les symboles `ggml_*`
-# embarqués par whisper-rs ; libllama.so les réutilise au lieu de ceux de
-# son propre libggml.so → segfault à l'alloc tenseurs.
-[target.x86_64-unknown-linux-gnu]
-rustflags = [
-    # Cache les symboles globaux des libs statiques whisper.cpp + ggml(.a)
-    # dans le binaire principal. Sinon le dynamic linker les expose et
-    # libllama.so → libggml.so les réutilise au lieu des siens (ABI mismatch,
-    # segfault à l'alloc tenseurs).
-    "-C", "link-arg=-Wl,--exclude-libs,ALL",
-]
+# Disabled while diagnosing a regression: --exclude-libs,ALL broke runtime
+# backend registration for llama-cpp-2 dynamic backends. Load order alone
+# (llama before whisper in runner.rs) is the original symbol-clash mitigation.

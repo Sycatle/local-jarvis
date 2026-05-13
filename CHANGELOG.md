@@ -12,8 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Bumped `actions/checkout` 4 → 6 and `googleapis/release-please-action` 4 → 5
   in CI workflows.
 - Bumped `toml` 0.8 → 1.1, `tokenizers` 0.20 → 0.23, `directories` 5 → 6,
-  `cpal` 0.15 → 0.17, `whisper-rs` 0.13 → 0.16, `crossterm` 0.28 → 0.29, and
-  `thiserror` 1.0 → 2.0.
+  `cpal` 0.15 → 0.17, `whisper-rs` 0.13 → 0.16, `crossterm` 0.28 → 0.29,
+  `thiserror` 1.0 → 2.0, `schemars` 0.8 → 1.2, `ort` 2.0.0-rc.10 → rc.12,
+  `ndarray` 0.16 → 0.17, `ratatui` 0.29 → 0.30, `zbus` 4 → 5, and
+  `rusqlite` 0.31 → 0.39.
 - Adapted `crates/jarvis-audio` for the `cpal::SampleRate` type alias change
   (no more tuple-struct constructor).
 - Adapted `crates/jarvis-stt` for the whisper-rs 0.16 API
