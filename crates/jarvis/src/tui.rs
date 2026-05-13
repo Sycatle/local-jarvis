@@ -184,7 +184,7 @@ impl App {
         });
     }
 
-    fn visible<'a>(&'a self) -> Vec<&'a LogLine> {
+    fn visible(&self) -> Vec<&LogLine> {
         self.lines
             .iter()
             .filter(|l| self.tab.keeps(l.level) && !self.silenced.contains(&l.level))
@@ -365,10 +365,7 @@ async fn ui_loop(
         tokio::select! {
             biased;
             maybe_key = keys.next() => {
-                match maybe_key {
-                    Some(Ok(Event::Key(k))) => handle_key(app, k, cmd_tx).await,
-                    Some(Ok(_)) | Some(Err(_)) | None => {}
-                }
+                if let Some(Ok(Event::Key(k))) = maybe_key { handle_key(app, k, cmd_tx).await }
             }
             maybe_ev = ev_rx.recv() => {
                 if let Some(ev) = maybe_ev {

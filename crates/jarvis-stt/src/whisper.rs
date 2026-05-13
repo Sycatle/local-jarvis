@@ -32,7 +32,7 @@ pub struct WhisperConfig {
     /// Strip non-speech markers (`*Bip*`, `(rires)`, etc.) at decode time.
     pub suppress_non_speech: bool,
     /// >0 → request GPU offload from whisper.cpp (effective only when the
-    /// `cuda` cargo feature is enabled at build time). 0 = CPU-only.
+    /// > `cuda` cargo feature is enabled at build time). 0 = CPU-only.
     pub n_gpu_layers: i32,
 }
 

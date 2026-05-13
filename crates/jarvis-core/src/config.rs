@@ -31,19 +31,9 @@ impl Default for AudioCfg {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(default)]
+#[derive(Default)]
 pub struct ClapCfg {
     pub enabled: bool,
-}
-
-impl Default for ClapCfg {
-    fn default() -> Self {
-        // Off by default: the band-pass energy detector fires on keyboard
-        // clicks and other transient noise. Users who want hands-free
-        // activation in a quiet room can flip this in config.toml; the
-        // hardened thresholds in `ClapConfig::default` keep false positives
-        // manageable when re-enabled.
-        Self { enabled: false }
-    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
